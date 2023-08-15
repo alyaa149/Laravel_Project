@@ -65,10 +65,25 @@
           <li class="active"><a href="#">Home</a></li>
           <li><a href="#">Dashboard</a></li>
           <li><a href="#">Settings</a></li>
+        
+       
+          
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        <li><a href="#" > {{ Auth::user()->name ?? '-' }}</a></li>
+          <li>
+           
+            <a href="{{ route('logout') }}"
+                            onclick="event.preventDefault();
+                                             document.getElementById('logout-form').submit();"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+           
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+          </li>
+         
         </ul>
+        
       </div>
     </div>
   </nav>
@@ -97,6 +112,8 @@
                 <th>Description</th>
                 <th>picture</th>
                 <th>Action</th>
+                <th>Category</th>
+                
               </tr>
             </thead>
             <tbody>
@@ -106,8 +123,9 @@
                   <td>{{ $book['title'] }}</td> 
                   <td>{{ $book['price'] }}</td>
                   <td>{{ $book['des'] }}</td>
-                  <td>{{ $book['pic'] }}</td>
                   <td>
+    <img width="60px" height="60px" src="{{ asset('storage/books/' . $book['pic']) }}" alt="">
+</td>                  <td>
                   <form action="{{ route('books.destroy', $book['id']) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
@@ -126,14 +144,16 @@
                                     @csrf              
                   <div class="btn-group" role="group">
             <button type="submit" class="btn btn-info">Info</button>
-            
+            </div>
+                  </td>
+                  <td>{{ $book->category->name ?? '-' }}</td>
+                </tr>
+
 </form>
 
 
 
-          </div>
-                  </td>
-                </tr>
+          
               @endforeach
             </tbody>
           </table>

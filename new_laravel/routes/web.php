@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\bookController;
 use App\Models\Book;
 use Illuminate\Http\Request;
-
+use App\Models\Category;
 
 
 // Route::get('/', function () {
@@ -38,18 +38,29 @@ use Illuminate\Http\Request;
 //         "books" => $books
 //     ]);
 // });
-
+Route::get('/', function () {
+    return view('welcome');
+});
 Route::resource('display_books', BookController::class);
 Route::get('create-book', function () {
     $page = "create book";
-    return view('create-book', ['page' => $page]);
+    $categories = Category::all();    
+    return view('create-book', ['page' => $page,'categories' => $categories]);
 })->name('create-book');
 
-// create route /profile
-Route::get('books', [bookController::class, 'index'])->name('books.index');
-Route::post('books', [bookController::class, 'store'])->name('books.store');
-Route::get('books/{book}',[bookController::class,'show'])->name('books.show');
-Route::delete('books/{book}',[bookController::class,'destroy'])->name('books.destroy');
-Route::put('/books/{book}', [bookController::class, 'update'])->name('books.update');
-Route::get('/edit_book/{book_id}', [bookController::class, 'edit'])->name('edit_book');
+
+// Route::get('books', [bookController::class, 'index'])->name('books.index');
+// Route::post('books', [bookController::class, 'store'])->name('books.store');
+// Route::get('books/{book}',[bookController::class,'show'])->name('books.show');
+// Route::delete('books/{book}',[bookController::class,'destroy'])->name('books.destroy');
+ //Route::put('/books/{book}', [bookController::class, 'update'])->name('books.update');
+ Route::get('/edit_book/{book_id}', [bookController::class, 'edit'])->name('edit_book');
+Route::middleware(['auth'])->group(function () {
+    Route::resource('books', bookController::class);
+    //, ['except' => ['update', 'edit']]
+});
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
 

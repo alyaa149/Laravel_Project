@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Book;
+use App\Models\Category;
+use App\Http\Requests\CreateBookRequest;
+use Illuminate\Support\Facades\Auth;
+
 
 class bookController extends Controller
 {
@@ -11,6 +15,7 @@ class bookController extends Controller
     // list 
     public function index()
     {   // sort the books in descending order based on the "id" column.
+       // dd(Auth::user()->name);
         $books = Book::paginate(10); //each page contains  max =10 books.
         $page = "Books";
         return view('display_books', [
@@ -18,14 +23,17 @@ class bookController extends Controller
             "books" => $books
         ]);
     }
-    public function store(Request $request)
+    public function store(CreateBookRequest  $request)
     {
+        $fileName = Book::uploadFile($request, $request->pic);
         Book::create([
             "title" => $request->title,
             "price" => $request->price,
             "des" => $request->des,
-            "pic" => $request->pic
+            "cat_id" => $request->category,
+            "pic" => $fileName
         ]);
+       // dd($request->all());
         return redirect()->route('books.index');
     }
 

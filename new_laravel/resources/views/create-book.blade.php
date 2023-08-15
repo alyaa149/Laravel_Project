@@ -14,7 +14,8 @@
     </style>
 </head>
 <body>
-  <form method="POST" action="{{ route('books.store') }}">
+
+  <form method="POST" action="{{ route('books.store') }}" enctype="multipart/form-data">
   @csrf
   <nav class="navbar navbar-inverse">
     <div class="container">
@@ -38,7 +39,15 @@
       </div>
     </div>
   </nav>
-
+  @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="container">
       <div class="form-group">
         <label for="title">Title</label>
@@ -49,13 +58,21 @@
         <input type="number" class="form-control" name="price" id="price">
       </div>
       <div class="form-group">
+            <label for="exampleInputSelect">Category</label>
+            <select name="category" class="form-select" aria-label="Default select example" value="{{ old('category') }}">
+                @foreach ($categories as $category)
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                @endforeach
+            </select>
+        </div>
+      <div class="form-group">
         <label for="description">Description</label>
         <input type="text" class="form-control" name="des" id="description">
       </div>
-      <div class="form-group">
-        <label for="pic">Picture</label>
-        <input type="text" class="form-control" name="picture" id="pic">
-      </div>
+      <div class="mb-3">
+            <label for="formFile" class="form-label">Default file input example</label>
+            <input class="form-control" name="pic" type="file" id="formFile">
+        </div>
       <div class="form-group form-check">
         <input type="checkbox" class="form-check-input" id="exampleCheck1">
         <label class="form-check-label" for="exampleCheck1">Check me out</label>
